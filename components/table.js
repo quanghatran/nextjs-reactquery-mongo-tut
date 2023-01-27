@@ -1,9 +1,14 @@
 import { BiEdit, BiTrashAlt } from "react-icons/bi";
-import data from "../database/data.json";
-import { getUser } from "../lib/helper";
+import { getUsers } from "../lib/helper";
+import { useQuery } from "react-query";
 
 export default function Table() {
-	getUser().then((res) => console.log(res));
+	const { isLoading, isError, data, error } = useQuery("users", getUsers);
+
+	if (isLoading) return <div>Employees is Loading...</div>;
+
+	if (isError) return <div>Got an Error... {error}</div>;
+
 	return (
 		<table className='min-w-full table-auto'>
 			<thead>
@@ -61,7 +66,13 @@ function Tr({ id, name, avatar, email, salary, date, status }) {
 			</td>
 			<td className='px-16 py-2'>
 				<button className='cursor'>
-					<span className='bg-green-500 text-white px-5 py-1 rounded-full'>
+					<span
+						className='text-white px-5 py-1 rounded-full'
+						style={{
+							backgroundColor: `${
+								status === "Active" ? "rgb(34, 197, 94)" : "rgb(244, 63, 94)"
+							}`,
+						}}>
 						{status || "Unknown"}
 					</span>
 				</button>
